@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Performance API</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui.css">
+</head>
+<body>
+    <div id="swagger-ui"></div>
+    
+    <script src="https://unpkg.com/swagger-ui-dist@4.5.0/swagger-ui-bundle.js"></script>
+    <script>
+        const spec = {
+            openapi: "3.0.0",
+            info: {
+                title: "Employee Performance API",
+                version: "1.0.0",
+                description: "Документация API для управления производительностью сотрудников"
+            },
+            servers: [
+                { url: "http://localhost:3000/api" }
+            ],
+            tags: [
+                { name: "Employees", description: "Управление сотрудниками" },
+                { name: "Metrics", description: "Метрики производительности" },
+                { name: "Ratings", description: "Система оценок" },
+                { name: "Feedbacks", description: "Управление фидбеком" },
+                { name: "Tasks", description: "Управление задачами" }
+            ],
+            paths: {
+                "/employees": {
+                    get: {
+                        tags: ["Employees"],
+                        summary: "Получить список сотрудников",
+                        responses: {
+                            "200": {
+                                description: "Успешный ответ",
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "array",
+                                            items: {
+                                                $ref: "#/components/schemas/Employee"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    post: {
+                        tags: ["Employees"],
+                        summary: "Добавить нового сотрудника",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        $ref: "#/components/schemas/Employee"
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "201": {
+                                description: "Сотрудник создан"
+                            }
+                        }
+                    }
+                },
+                "/metrics": {
+                    get: {
+                        tags: ["Metrics"],
+                        summary: "Получить метрики производительности",
+                        responses: {
+                            "200": {
+                                description: "Список метрик",
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "array",
+                                            items: {
+                                                $ref: "#/components/schemas/Metric"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/ratings": {
+                    post: {
+                        tags: ["Ratings"],
+                        summary: "Добавить оценку сотруднику",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        $ref: "#/components/schemas/Rating"
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "201": {
+                                description: "Оценка добавлена"
+                            }
+                        }
+                    }
+                },
+                "/feedbacks": {
+                    post: {
+                        tags: ["Feedbacks"],
+                        summary: "Добавить фидбек",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        $ref: "#/components/schemas/Feedback"
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "201": {
+                                description: "Фидбек добавлен"
+                            }
+                        }
+                    },
+                    get: {
+                        tags: ["Feedbacks"],
+                        summary: "Получить список фидбеков",
+                        responses: {
+                            "200": {
+                                description: "Список фидбеков",
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "array",
+                                            items: {
+                                                $ref: "#/components/schemas/Feedback"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "/tasks": {
+                    post: {
+                        tags: ["Tasks"],
+                        summary: "Создать новую задачу",
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": {
+                                    schema: {
+                                        $ref: "#/components/schemas/Task"
+                                    }
+                                }
+                            }
+                        },
+                        responses: {
+                            "201": {
+                                description: "Задача создана"
+                            }
+                        }
+                    },
+                    get: {
+                        tags: ["Tasks"],
+                        summary: "Получить список задач",
+                        responses: {
+                            "200": {
+                                description: "Список задач",
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "array",
+                                            items: {
+                                                $ref: "#/components/schemas/Task"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            components: {
+                schemas: {
+                    Employee: {
+                        type: "object",
+                        required: ["name"],
+                        properties: {
+                            id: {
+                                type: "integer",
+                                format: "int64",
+                                readOnly: true
+                            },
+                            name: {
+                                type: "string"
+                            },
+                            position: {
+                                type: "string"
+                            }
+                        }
+                    },
+                    Metric: {
+                        type: "object",
+                        properties: {
+                            employeeId: {
+                                type: "integer"
+                            },
+                            kpi: {
+                                type: "number",
+                                format: "float"
+                            },
+                            date: {
+                                type: "string",
+                                format: "date"
+                            }
+                        }
+                    },
+                    Rating: {
+                        type: "object",
+                        required: ["employeeId", "score"],
+                        properties: {
+                            employeeId: {
+                                type: "integer"
+                            },
+                            score: {
+                                type: "integer",
+                                minimum: 1,
+                                maximum: 5
+                            },
+                            comment: {
+                                type: "string"
+                            }
+                        }
+                    },
+                    Feedback: {
+                        type: "object",
+                        required: ["content"],
+                        properties: {
+                            id: {
+                                type: "integer",
+                                readOnly: true
+                            },
+                            employeeId: {
+                                type: "integer"
+                            },
+                            content: {
+                                type: "string"
+                            },
+                            date: {
+                                type: "string",
+                                format: "date-time",
+                                readOnly: true
+                            }
+                        }
+                    },
+                    Task: {
+                        type: "object",
+                        required: ["description"],
+                        properties: {
+                            id: {
+                                type: "integer",
+                                readOnly: true
+                            },
+                            description: {
+                                type: "string"
+                            },
+                            status: {
+                                type: "string",
+                                enum: ["pending", "in_progress", "completed"],
+                                default: "pending"
+                            },
+                            dueDate: {
+                                type: "string",
+                                format: "date"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        SwaggerUIBundle({
+            spec: spec,
+            dom_id: '#swagger-ui',
+            presets: [
+                SwaggerUIBundle.presets.apis,
+                SwaggerUIBundle.SwaggerUIStandalonePreset
+            ]
+        });
+    </script>
+</body>
+</html>
